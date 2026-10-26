@@ -1,0 +1,28 @@
+name: Bot Monitor de Precios
+
+on:
+  schedule:
+    # Se ejecutará automáticamente cada 6 horas de forma gratuita
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Permite ejecutarlo manualmente cuando quieras desde la web de GitHub
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Ejecutar Bot
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python bot.py
